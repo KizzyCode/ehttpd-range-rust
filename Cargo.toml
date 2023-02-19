@@ -1,0 +1,33 @@
+[package]
+name = "ehttpd-range"
+version = "0.1.0"
+edition = "2021"
+authors = ["KizzyCode Software Labs./Keziah Biermann <development@kizzycode.de>"]
+keywords = []
+categories = []
+description = "A crate to comfortably handle HTTP range requests within `ehttpd`-based applications"
+license = "BSD-2-Clause OR MIT"
+repository = "https://github.com/KizzyCode/ehttdp-range-rust"
+readme = "README.md"
+
+
+[badges]
+appveyor = { repository = "KizzyCode/ehttdp-range-rust" }
+
+
+[features]
+default = []
+
+
+[dependencies]
+ehttpd = { version = "0.4.1", default-features = false }
+
+[dev-dependencies]
+rand = { version = "0.8.5", default-features = false, features = ["std", "std_rng"] }
+
+
+[profile.release]
+overflow-checks = true
+
+[profile.bench]
+overflow-checks = true
