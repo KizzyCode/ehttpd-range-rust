@@ -6,7 +6,14 @@ use ehttpd::{
 };
 use ehttpd_range::{RequestRangeExt, ResponseRangeExt};
 use rand::{rngs::ThreadRng, Rng};
-use std::{env, fs, ops::Deref, path::PathBuf, sync::Arc, thread};
+use std::{
+    env,
+    fs::{self, File},
+    ops::Deref,
+    path::PathBuf,
+    sync::Arc,
+    thread,
+};
 
 /// Some fake data
 #[derive(Debug, Clone)]
@@ -99,8 +106,11 @@ impl FakeRequest {
             // Create the response
             let mut response: Response = ResponseRangeExt::new_206_partial_content();
             response.set_accept_ranges_bytes();
+
+            // Open the file
+            let file = File::open(self.data.path.as_ref()).expect("failed to open file");
             response
-                .set_body_file_range(self.data.path.as_ref(), (self.start as u64)..=(self.end_incl as u64))
+                .set_body_file_range(file, (self.start as u64)..=(self.end_incl as u64))
                 .expect("failed to set range body");
 
             // Serialize the response

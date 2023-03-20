@@ -11,7 +11,6 @@ use std::{
     fs::File,
     io::{Read, Seek, SeekFrom},
     ops::{Range, RangeBounds, RangeInclusive},
-    path::Path,
 };
 
 /// An extension trait for HTTP responses to work with range requests
@@ -46,9 +45,9 @@ where
     /// # Note
     /// This function also sets the `Content-Length` and the `Content-Range` headers. Furthermore, it raises an error if
     /// `self.status` is not `206`
-    fn set_body_file_range<T, R>(&mut self, path: T, range: R) -> Result<(), Error>
+    fn set_body_file_range<T, R>(&mut self, file: T, range: R) -> Result<(), Error>
     where
-        T: AsRef<Path>,
+        T: Into<File>,
         R: RangeBounds<u64>;
 }
 impl<const HEADER_SIZE_MAX: usize> ResponseRangeExt for Response<HEADER_SIZE_MAX> {
@@ -98,9 +97,9 @@ impl<const HEADER_SIZE_MAX: usize> ResponseRangeExt for Response<HEADER_SIZE_MAX
         self.set_body_data(subdata);
         Ok(())
     }
-    fn set_body_file_range<T, R>(&mut self, path: T, range: R) -> Result<(), Error>
+    fn set_body_file_range<T, R>(&mut self, file: T, range: R) -> Result<(), Error>
     where
-        T: AsRef<Path>,
+        T: Into<File>,
         R: RangeBounds<u64>,
     {
         // Ensure that we are a 206
@@ -109,7 +108,7 @@ impl<const HEADER_SIZE_MAX: usize> ResponseRangeExt for Response<HEADER_SIZE_MAX
         }
 
         // Open the file and get the file size
-        let mut file = File::open(path)?;
+        let mut file = file.into();
         let file_size = file.metadata()?.len();
         let Range { start, end } =
             Range::from_range_bounds(range, 0, file_size).ok_or_else(|| error!("Range would exceed file size"))?;
