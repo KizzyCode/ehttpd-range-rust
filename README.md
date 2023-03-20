@@ -4,7 +4,7 @@
 [![docs.rs](https://docs.rs/ehttdp-range/badge.svg)](https://docs.rs/ehttdp-range)
 [![crates.io](https://img.shields.io/crates/v/ehttdp-range.svg)](https://crates.io/crates/ehttdp-range)
 [![Download numbers](https://img.shields.io/crates/d/ehttdp-range.svg)](https://crates.io/crates/ehttdp-range)
-[![dependency status](https://deps.rs/crate/ehttdp-range/0.1.0/status.svg)](https://deps.rs/crate/ehttdp-range/0.1.0)
+[![dependency status](https://deps.rs/crate/ehttdp-range/latest/status.svg)](https://deps.rs/crate/ehttdp-range)
 
 
 # `ehttdp-range`
