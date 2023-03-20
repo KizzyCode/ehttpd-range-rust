@@ -7,12 +7,12 @@ keywords = []
 categories = []
 description = "A crate to comfortably handle HTTP range requests within `ehttpd`-based applications"
 license = "BSD-2-Clause OR MIT"
-repository = "https://github.com/KizzyCode/ehttdp-range-rust"
+repository = "https://github.com/KizzyCode/ehttpd-range-rust"
 readme = "README.md"
 
 
 [badges]
-appveyor = { repository = "KizzyCode/ehttdp-range-rust" }
+appveyor = { repository = "KizzyCode/ehttpd-range-rust" }
 
 
 [features]

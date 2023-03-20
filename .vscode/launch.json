@@ -10,10 +10,10 @@
                     "test",
                     "--no-run",
                     "--lib",
-                    "--package=ehttdp-range"
+                    "--package=ehttpd-range"
                 ],
                 "filter": {
-                    "name": "ehttdp-range",
+                    "name": "ehttpd-range",
                     "kind": "lib"
                 }
             },
