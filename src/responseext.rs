@@ -123,8 +123,7 @@ impl<const HEADER_SIZE_MAX: usize> ResponseRangeExt for Response<HEADER_SIZE_MAX
         self.set_content_length(len);
 
         // Set the raw body
-        let source = Source::from_other(file);
-        self.set_body(source);
+        self.body = Source::from_other(file);
         Ok(())
     }
 }
