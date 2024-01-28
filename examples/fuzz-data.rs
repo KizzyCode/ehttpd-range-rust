@@ -68,7 +68,13 @@ impl FakeRequest {
         assert_eq!(request.method.as_ref(), b"GET");
         assert_eq!(request.target.as_ref(), b"/");
         assert_eq!(request.version.as_ref(), b"HTTP/1.1");
-        let range = request.range().expect("invalid HTTP range request").expect("missing expected range header");
+
+        // Validate range
+        let range = (request.range())
+            .expect("invalid HTTP range request")
+            .expect("missing expected range header")
+            .to_inclusive(0, self.data.len() as u64)
+            .expect("invalid range in range header");
         assert_eq!(range, (self.start as u64)..=(self.end_incl as u64));
 
         // Create the response data
@@ -91,7 +97,7 @@ impl FakeRequest {
             concat!(
                 "HTTP/1.1 206 Partial Content\r\n",
                 "Accept-Ranges: bytes\r\n",
-                "Content-Range: {}-{}/{}\r\n",
+                "Content-Range: bytes {}-{}/{}\r\n",
                 "Content-Length: {}\r\n",
                 "\r\n"
             ),
