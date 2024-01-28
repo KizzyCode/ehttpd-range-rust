@@ -69,7 +69,7 @@ impl<const HEADER_SIZE_MAX: usize> ResponseRangeExt for Response<HEADER_SIZE_MAX
         // Compute the bounds
         let range = RangeInclusive::from_range_bounds(range, 0, total)
             .ok_or_else(|| error!("Range would exceed total limit"))?;
-        let range_string = format!("{}-{}/{total}", range.start(), range.end());
+        let range_string = format!("bytes {}-{}/{total}", range.start(), range.end());
 
         // Set the range
         self.set_field("Content-Range", range_string);
