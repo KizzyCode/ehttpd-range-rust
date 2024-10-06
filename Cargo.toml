@@ -1,6 +1,6 @@
 [package]
 name = "ehttpd-range"
-version = "0.6.0"
+version = "0.6.1"
 edition = "2021"
 authors = ["KizzyCode Software Labs./Keziah Biermann <development@kizzycode.de>"]
 keywords = []
@@ -20,7 +20,7 @@ default = []
 
 
 [dependencies]
-ehttpd = { version = "0.8.1", default-features = false }
+ehttpd = { version = "0.9.0", default-features = false }
 
 [dev-dependencies]
 rand = { version = "0.8.5", default-features = false, features = ["std", "std_rng"] }
