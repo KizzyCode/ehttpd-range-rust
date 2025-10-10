@@ -5,7 +5,7 @@ use ehttpd::{
     http::{Request, Response},
 };
 use ehttpd_range::{RequestRangeExt, ResponseRangeExt};
-use rand::{rngs::ThreadRng, Rng};
+use rand::{Rng, rngs::ThreadRng};
 use std::{
     env,
     fs::{self, File},
@@ -19,7 +19,7 @@ use std::{
 #[derive(Debug, Clone)]
 struct FakeData {
     /// Some fake data
-    data: Arc<Vec<u8>>,
+    data: Arc<[u8]>,
     /// The file path
     path: Arc<PathBuf>,
 }
@@ -37,7 +37,7 @@ impl FakeData {
         // Print info and init self
         eprintln!("Created temp file at {}", path.display());
         eprintln!("  - you may need to delete this file manually after fuzzing");
-        Self { data: Arc::new(data), path: Arc::new(path) }
+        Self { data: Arc::from(data), path: Arc::new(path) }
     }
 }
 impl Drop for FakeData {
@@ -61,7 +61,7 @@ impl Deref for FakeData {
 }
 impl From<FakeData> for Data {
     fn from(value: FakeData) -> Self {
-        Data::ArcVec { backing: Arc::clone(&value.data), range: 0..value.data.len() }
+        Data::Heap { data: value.data.clone(), range: 0..value.data.len() }
     }
 }
 

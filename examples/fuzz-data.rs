@@ -5,21 +5,21 @@ use ehttpd::{
     http::{Request, Response},
 };
 use ehttpd_range::{RequestRangeExt, ResponseRangeExt};
-use rand::{rngs::ThreadRng, Rng};
+use rand::{Rng, rngs::ThreadRng};
 use std::{ops::Deref, sync::Arc, thread};
 
 /// Some fake data
 #[derive(Debug, Clone)]
 struct FakeData {
     /// Some fake data
-    data: Arc<Vec<u8>>,
+    data: Arc<[u8]>,
 }
 impl FakeData {
     /// Generates some random fake data
     pub fn generate(max: usize, rng: &mut ThreadRng) -> Self {
         let mut data = vec![0u8; max];
         rng.fill(data.as_mut_slice());
-        Self { data: Arc::new(data) }
+        Self { data: Arc::from(data) }
     }
 }
 impl Deref for FakeData {
@@ -31,7 +31,7 @@ impl Deref for FakeData {
 }
 impl From<FakeData> for Data {
     fn from(value: FakeData) -> Self {
-        Data::ArcVec { backing: Arc::clone(&value.data), range: 0..value.data.len() }
+        Data::Heap { data: value.data.clone(), range: 0..value.data.len() }
     }
 }
 

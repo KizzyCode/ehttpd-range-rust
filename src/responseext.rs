@@ -9,7 +9,7 @@ use ehttpd::{
 };
 use std::{
     fs::File,
-    io::{Read, Seek, SeekFrom},
+    io::{BufReader, Read, Seek, SeekFrom},
     ops::{Range, RangeBounds, RangeInclusive},
 };
 
@@ -108,7 +108,7 @@ impl<const HEADER_SIZE_MAX: usize> ResponseRangeExt for Response<HEADER_SIZE_MAX
         }
 
         // Open the file and get the file size
-        let mut file = file.into();
+        let mut file: File = file.into();
         let file_size = file.metadata()?.len();
         let Range { start, end } =
             Range::from_range_bounds(range, 0, file_size).ok_or_else(|| error!("Range would exceed file size"))?;
@@ -122,8 +122,9 @@ impl<const HEADER_SIZE_MAX: usize> ResponseRangeExt for Response<HEADER_SIZE_MAX
         self.set_content_range(start..end, file_size)?;
         self.set_content_length(len);
 
-        // Set the raw body
-        self.body = Source::from_other(file);
+        // Buffer the file and set the raw body
+        let file = BufReader::new(file);
+        self.body = Source::new(file);
         Ok(())
     }
 }
