@@ -20,8 +20,7 @@ default = []
 
 
 [dependencies]
-#ehttpd = { version = "0.10.0", default-features = false }
-ehttpd = { path = "../ehttpd", default-features = false }
+ehttpd = { version = "0.10.0", default-features = false }
 
 [dev-dependencies]
 rand = { version = "0.8.5", default-features = false, features = ["std", "std_rng"] }
