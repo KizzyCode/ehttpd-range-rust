@@ -1,19 +1,15 @@
 //! Implements a common range-request-response pattern and fuzzes it
 
-use ehttpd::{
-    bytes::{Data, Source},
-    http::{Request, Response},
-};
-use ehttpd_range::{RequestRangeExt, ResponseRangeExt};
-use rand::{Rng, rngs::ThreadRng};
-use std::{
-    env,
-    fs::{self, File},
-    ops::Deref,
-    path::PathBuf,
-    sync::Arc,
-    thread,
-};
+use ehttpd::bytes::{Data, Source};
+use ehttpd::http::{Request, Response};
+use ehttpd_range::{RangeRequest, RangeResponse};
+use rand::Rng;
+use rand::rngs::ThreadRng;
+use std::fs::{self, File};
+use std::ops::Deref;
+use std::path::PathBuf;
+use std::sync::Arc;
+use std::{env, thread};
 
 /// Some fake data
 #[derive(Debug, Clone)]
@@ -110,7 +106,7 @@ impl FakeRequest {
         // Create the response data
         let response_data = {
             // Create the response
-            let mut response: Response = ResponseRangeExt::new_206_partial_content();
+            let mut response: Response = RangeResponse::new_206_partial_content();
             response.set_accept_ranges_bytes();
 
             // Open the file

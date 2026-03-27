@@ -1,20 +1,16 @@
 //! An extension trait for HTTP requests to work with range requests
 
 use crate::rangeext::RangeExt;
-use ehttpd::{
-    bytes::{Data, DataSliceExt, Source},
-    error,
-    error::Error,
-    http::{Response, ResponseExt},
-};
-use std::{
-    fs::File,
-    io::{BufReader, Read, Seek, SeekFrom},
-    ops::{Range, RangeBounds, RangeInclusive},
-};
+use ehttpd::bytes::{Data, Source};
+use ehttpd::err;
+use ehttpd::error::Error;
+use ehttpd::http::Response;
+use std::fs::File;
+use std::io::{BufReader, Read, Seek, SeekFrom};
+use std::ops::{Range, RangeBounds, RangeInclusive};
 
 /// An extension trait for HTTP responses to work with range requests
-pub trait ResponseRangeExt
+pub trait RangeResponse
 where
     Self: Sized,
 {
@@ -50,7 +46,7 @@ where
         T: Into<File>,
         R: RangeBounds<u64>;
 }
-impl<const HEADER_SIZE_MAX: usize> ResponseRangeExt for Response<HEADER_SIZE_MAX> {
+impl<const HEADER_SIZE_MAX: usize> RangeResponse for Response<HEADER_SIZE_MAX> {
     fn new_206_partial_content() -> Self {
         Self::new_status_reason(206, "Partial Content")
     }
@@ -67,8 +63,8 @@ impl<const HEADER_SIZE_MAX: usize> ResponseRangeExt for Response<HEADER_SIZE_MAX
         T: RangeBounds<u64>,
     {
         // Compute the bounds
-        let range = RangeInclusive::from_range_bounds(range, 0, total)
-            .ok_or_else(|| error!("Range would exceed total limit"))?;
+        let range =
+            RangeInclusive::from_range_bounds(range, 0, total).ok_or_else(|| err!("Range would exceed total limit"))?;
         let range_string = format!("bytes {}-{}/{total}", range.start(), range.end());
 
         // Set the range
@@ -83,13 +79,13 @@ impl<const HEADER_SIZE_MAX: usize> ResponseRangeExt for Response<HEADER_SIZE_MAX
     {
         // Ensure that we are a 206
         if !self.status.eq(b"206") {
-            return Err(error!("Response is not a 206 response"));
+            return Err(err!("Response is not a 206 response"));
         }
 
         // Prepare data and range
         let data: Data = data.into();
         let Range { start, end } =
-            Range::from_range_bounds(range, 0, data.len()).ok_or_else(|| error!("Range would exceed data size"))?;
+            Range::from_range_bounds(range, 0, data.len()).ok_or_else(|| err!("Range would exceed data size"))?;
         let subdata = data.subcopy(start..end).expect("range would exceed data size");
 
         // Set content-range header and body data
@@ -104,14 +100,14 @@ impl<const HEADER_SIZE_MAX: usize> ResponseRangeExt for Response<HEADER_SIZE_MAX
     {
         // Ensure that we are a 206
         if !self.status.eq(b"206") {
-            return Err(error!("Response is not a 206 response"));
+            return Err(err!("Response is not a 206 response"));
         }
 
         // Open the file and get the file size
         let mut file: File = file.into();
         let file_size = file.metadata()?.len();
         let Range { start, end } =
-            Range::from_range_bounds(range, 0, file_size).ok_or_else(|| error!("Range would exceed file size"))?;
+            Range::from_range_bounds(range, 0, file_size).ok_or_else(|| err!("Range would exceed file size"))?;
 
         // Get the length and virtually truncate the file
         let len = end.saturating_sub(start);

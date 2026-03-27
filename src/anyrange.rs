@@ -1,6 +1,6 @@
 //! A type-erased inclusive range container
 
-use ehttpd::{error, error::Error};
+use ehttpd::{err, error::Error};
 use std::{
     cmp::Ordering,
     ops::{Bound, RangeBounds, RangeInclusive},
@@ -50,7 +50,7 @@ impl<T> AnyInclusiveRange<T> {
         // Validate resulting range
         match start_incl.partial_cmp(&end_incl) {
             Some(Ordering::Less | Ordering::Equal) => Ok(start_incl..=end_incl),
-            _ => Err(error!("End of inclusive range is before start")),
+            _ => Err(err!("End of inclusive range is before start")),
         }
     }
 
