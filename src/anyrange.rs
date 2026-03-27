@@ -1,10 +1,9 @@
 //! A type-erased inclusive range container
 
-use ehttpd::{err, error::Error};
-use std::{
-    cmp::Ordering,
-    ops::{Bound, RangeBounds, RangeInclusive},
-};
+use ehttpd::err;
+use ehttpd::error::Error;
+use std::cmp::Ordering;
+use std::ops::{Bound, RangeBounds, RangeInclusive};
 
 /// A type-erased inclusive range
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
