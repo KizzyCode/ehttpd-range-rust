@@ -3,7 +3,7 @@
 use ehttpd::bytes::{Data, Source};
 use ehttpd::http::{Request, Response};
 use ehttpd_range::{RangeRequest, RangeResponse};
-use rand::Rng;
+use rand::RngExt;
 use rand::rngs::ThreadRng;
 use std::ops::Deref;
 use std::sync::Arc;
@@ -50,8 +50,8 @@ impl FakeRequest {
     /// Creates a random fake request over the fake data
     pub fn generate(data: &FakeData, rng: &mut ThreadRng) -> Self {
         let len_incl = data.len().saturating_sub(1);
-        let start = rng.gen_range(0..=len_incl);
-        let end_incl = rng.gen_range(start..=len_incl);
+        let start = rng.random_range(0..=len_incl);
+        let end_incl = rng.random_range(start..=len_incl);
         Self { data: data.clone(), start, end_incl }
     }
 
@@ -119,7 +119,7 @@ fn thread_main() {
     const MAX: usize = 128 * 1024 * 1024;
 
     // Generate fake data
-    let mut rng = rand::thread_rng();
+    let mut rng = rand::rng();
     let data = FakeData::generate(MAX, &mut rng);
     loop {
         // Create a fake request
