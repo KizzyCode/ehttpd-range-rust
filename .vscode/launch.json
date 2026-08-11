@@ -2,22 +2,14 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "lldb",
+            "type": "lldb-dap",
             "request": "launch",
-            "name": "cargo test",
-            "cargo": {
-                "args": [
-                    "test",
-                    "--no-run",
-                    "--lib",
-                    "--package=ehttpd-range"
-                ],
-                "filter": {
-                    "name": "ehttpd-range",
-                    "kind": "lib"
-                }
-            },
+            "name": "LLDB Debug (example: helloworld)",
+            "program": "${workspaceFolder}target/debug/examples/helloworld",
+            "disableASLR": false,
+            "initCommands": ["settings set target.disable-aslr false"],
             "args": [],
+            "env": [],
             "cwd": "${workspaceFolder}"
         }
     ]

@@ -46,7 +46,7 @@ where
         T: Into<File>,
         R: RangeBounds<u64>;
 }
-impl<const HEADER_SIZE_MAX: usize> RangeResponse for Response<HEADER_SIZE_MAX> {
+impl RangeResponse for Response {
     fn new_206_partial_content() -> Self {
         Self::new_status_reason(206, "Partial Content")
     }

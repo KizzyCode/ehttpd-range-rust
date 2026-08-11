@@ -116,7 +116,7 @@ impl FakeRequest {
 /// A thread's main function
 fn thread_main() {
     /// The maximum fake data size
-    const MAX: usize = 128 * 1024 * 1024;
+    const MAX: usize = 32 * 1024 * 1024;
 
     // Generate fake data
     let mut rng = rand::rng();

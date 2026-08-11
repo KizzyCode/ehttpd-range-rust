@@ -154,7 +154,7 @@ fn thread_main(data: FakeData) {
 
 fn main() {
     /// The maximum fake data size
-    const MAX: usize = 512 * 1024 * 1024;
+    const MAX: usize = 32 * 1024 * 1024;
 
     // Get the amount of available parallelism
     let threadnum = match thread::available_parallelism() {
